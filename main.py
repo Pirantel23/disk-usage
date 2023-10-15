@@ -2,6 +2,7 @@ from scanner import DiskUsage
 import argparse
 import coloring as cl
 from exceptions import EmptyDirectoryException, InvalidDirectoryException
+from utils import Utils
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Disk Usage Analyzer")
@@ -21,10 +22,9 @@ if __name__ == "__main__":
         if not files:
             print(f"{cl.RED}No files found.{cl.RESET}")
         else:
-            print(f"{cl.GREEN}Found {len(files)} files occupying {sum(file.size for file in files)}b. Would you like to see them? (y/n){cl.RESET}")
-            ans = input()
+            ans = input(f"{cl.GREEN}Found {len(files)} files occupying {Utils.get_total_size(files)}. Would you like to see them? (y/n)\n:{cl.RESET}")
             if ans.lower() == 'y':
-                print('\n'.join((file.path for file in files)))
+                print('\n\n'.join((repr(file) for file in files)))
     except EmptyDirectoryException:
         print(f"{cl.RED}No files were found in this directory.{cl.RESET}")
     except InvalidDirectoryException:

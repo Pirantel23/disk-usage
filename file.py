@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from utils import Utils
 
 class File:
     def __init__(self, path: str) -> None:
@@ -9,7 +10,7 @@ class File:
         self.size = self.get_size()
     
     def __repr__(self) -> str:
-        return f'{self.path}'
+        return f'File: {self.path}\nSize: {Utils.scale_units(self.size)} Creation Date: {self.creation_date}'
 
     def get_size(self) -> int:
         try:

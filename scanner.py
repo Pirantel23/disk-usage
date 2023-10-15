@@ -2,7 +2,7 @@ import os
 from tqdm import tqdm
 from datetime import datetime
 from string import ascii_uppercase
-from analyser import Analyser
+from utils import Utils
 from exceptions import EmptyDirectoryException, InvalidDirectoryException
 from file import File
 
@@ -27,9 +27,9 @@ class DiskUsage:
             raise EmptyDirectoryException
         for path in tqdm(paths, desc="Scanning files", mininterval=0.01, unit='files', miniters=1, smoothing=1):
             file = File(path)
-            if extension_filter and not Analyser.check_extension(file, extension_filter):
+            if extension_filter and not Utils.check_extension(file, extension_filter):
                 continue
-            if date_filter and not Analyser.check_creation_date(file, date_filter):
+            if date_filter and not Utils.check_creation_date(file, date_filter):
                 continue
             found.append(file)
         
