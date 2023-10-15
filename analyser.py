@@ -1,13 +1,11 @@
-from datetime import datetime
-
 class Analyser:
     def check_extension(file, extension: str) -> bool:
         return file.extension == extension
     
-    def check_creation_date(file, date: datetime) -> bool:
+    def check_creation_date(file, date) -> bool:
         return file.creation_date.date() == date.date()
     
-    def check_between_dates(file, date1: datetime, date2: datetime) -> bool:
+    def check_between_dates(file, date1, date2) -> bool:
         if date1.date() == date2.date():
             return Analyser.check_creation_date(file, date1)
         elif date1 > date2:

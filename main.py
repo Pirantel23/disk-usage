@@ -21,7 +21,7 @@ if __name__ == "__main__":
         if not files:
             print(f"{cl.RED}No files found.{cl.RESET}")
         else:
-            print(f"{cl.GREEN}Found {len(files)} files. Would you like to see them? (y/n){cl.RESET}")
+            print(f"{cl.GREEN}Found {len(files)} files occupying {sum(file.size for file in files)}b. Would you like to see them? (y/n){cl.RESET}")
             ans = input()
             if ans.lower() == 'y':
                 print('\n'.join((file.path for file in files)))

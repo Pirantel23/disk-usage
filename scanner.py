@@ -4,36 +4,7 @@ from datetime import datetime
 from string import ascii_uppercase
 from analyser import Analyser
 from exceptions import EmptyDirectoryException, InvalidDirectoryException
-
-class File:
-    def __init__(self, path: str) -> None:
-        self.path = path
-        self.extension = self.get_extension()
-        self.creation_date = self.get_creation_date()
-        self.size = self.get_size()
-    
-    def __repr__(self) -> str:
-        return f'{self.path}'
-
-    def get_size(self) -> int:
-        try:
-            return os.path.getsize(self.path)
-        except FileNotFoundError:
-            return
-    
-    def get_extension(self) -> str:
-        try:
-            return os.path.splitext(self.path)[-1]
-        except FileNotFoundError:
-            return
-    
-    def get_creation_date(self) -> datetime:
-        try:
-            timestamp = os.path.getctime(self.path)
-            return datetime.fromtimestamp(timestamp)
-        except FileNotFoundError:
-            return
-
+from file import File
 
 class DiskUsage:
     def get_files_in_directory(self, directory) -> list[File]:
@@ -54,7 +25,7 @@ class DiskUsage:
         paths = self.get_files_in_directory(directory)
         if not paths:
             raise EmptyDirectoryException
-        for path in tqdm(paths, desc="Calculating Disk Usage", mininterval=0.01, unit='files'):
+        for path in tqdm(paths, desc="Scanning files", mininterval=0.01, unit='files', miniters=1, smoothing=1):
             file = File(path)
             if extension_filter and not Analyser.check_extension(file, extension_filter):
                 continue
