@@ -1,26 +1,50 @@
+from exceptions import InvalidRangeOperator, InvalidSizeFormat
+
+
 class Utils:
     def check_extension(file, extension: str) -> bool:
         return file.extension == extension
     
-    def check_creation_date(file, date) -> bool:
-        return file.creation_date.date() == date.date()
+    def check_creation_date(file, date, range = None) -> bool:
+        if range is None:
+            return file.creation_date.date() == date.date()
+        elif range == '+':
+            return file.creation_date.date() >= date.date()
+        elif range == '-':
+            return file.creation_date.date() == date.date()
+        else:
+            raise InvalidRangeOperator
     
-    def scale_units(size: int):
+    def check_size(file, min_size: int, max_size: int):
+        return file.size >= min_size and file.size <= max_size
+    
+    def check_nested_level(file, min_nested: int, max_nested: int):
+        return file.nested_level >= min_nested and file.nested_level <= max_nested
+
+    def downscale_units(size: str) -> int:
+        size = size.lower()
+
+        if size.isdigit():
+            return int(size)
+
+        units = {'b': 1, 'kb': 1024, 'mb': 1024**2, 'gb': 1024**3}
+
+        for unit, multiplier in units.items():
+            print(size, unit)
+            if size.endswith(unit) and size[:-len(unit)].strip().isdigit():
+                return int(size[:-len(unit)].strip()) * multiplier
+
+        raise InvalidSizeFormat
+
+
+    def upscale_units(size: int):
         unit_number = 0
         while size >= 1024:
             size/=1024
             unit_number += 1
 
-        return f"{size}{['b', 'KB', 'MB', 'GB', 'TB'][unit_number]}"
+        return f"{size:.2f}{['B', 'KB', 'MB', 'GB', 'TB'][unit_number]}"
 
     def get_total_size(files) -> int:
         total = sum(file.size for file in files)
-        return Utils.scale_units(total)
-
-    def check_between_dates(file, date1, date2) -> bool:
-        if date1.date() == date2.date():
-            return Utils.check_creation_date(file, date1)
-        elif date1 > date2:
-            return file.creation_date > date2 and file.creation_date < date1
-        else:
-            return file.creation_date > date1 and file.creation_date < date2
+        return Utils.upscale_units(total)

@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from utils import Utils
+import coloring as cl
 
 class File:
     def __init__(self, path: str) -> None:
@@ -8,9 +9,10 @@ class File:
         self.extension = self.get_extension()
         self.creation_date = self.get_creation_date()
         self.size = self.get_size()
+        self.nested_level = self.get_nested_level()
     
     def __repr__(self) -> str:
-        return f'File: {self.path}\nSize: {Utils.scale_units(self.size)} Creation Date: {self.creation_date}'
+        return f'File: {self.path}\n{cl.MAGENTA}Size: {Utils.upscale_units(self.size)} {cl.CYAN}Creation Date: {self.creation_date}{cl.RESET}'
 
     def get_size(self) -> int:
         try:
@@ -30,3 +32,6 @@ class File:
             return datetime.fromtimestamp(timestamp)
         except FileNotFoundError:
             return
+        
+    def get_nested_level(self) -> int:
+        return len(self.path.split(os.sep)) - 1
