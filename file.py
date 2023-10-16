@@ -10,6 +10,7 @@ class File:
         self.creation_date = self.get_creation_date()
         self.size = self.get_size()
         self.nested_level = self.get_nested_level()
+        self.author_uid = self.get_author_uid()
     
     def __repr__(self) -> str:
         return f'File: {self.path}\n{cl.MAGENTA}Size: {Utils.upscale_units(self.size)} {cl.CYAN}Creation Date: {self.creation_date}{cl.RESET}'
@@ -34,4 +35,13 @@ class File:
             return
         
     def get_nested_level(self) -> int:
-        return len(self.path.split(os.sep)) - 1
+        try:
+            return len(self.path.split(os.sep)) - 1
+        except FileNotFoundError:
+            return
+    
+    def get_author_uid(self) -> int:
+        try:
+            return os.stat(self.path).st_uid
+        except FileNotFoundError:
+            return

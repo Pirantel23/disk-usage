@@ -1,5 +1,5 @@
 from exceptions import InvalidRangeOperator, InvalidSizeFormat
-
+import subprocess
 
 class Utils:
     def check_extension(file, extension: str) -> bool:
@@ -27,15 +27,13 @@ class Utils:
         if size.isdigit():
             return int(size)
 
-        units = {'b': 1, 'kb': 1024, 'mb': 1024**2, 'gb': 1024**3}
+        units = {'b': 1, 'kb': 1024, 'mb': 1024**2, 'gb': 1024**3, 'tb': 1024**4}
 
         for unit, multiplier in units.items():
-            print(size, unit)
             if size.endswith(unit) and size[:-len(unit)].strip().isdigit():
                 return int(size[:-len(unit)].strip()) * multiplier
 
         raise InvalidSizeFormat
-
 
     def upscale_units(size: int):
         unit_number = 0
@@ -48,3 +46,6 @@ class Utils:
     def get_total_size(files) -> int:
         total = sum(file.size for file in files)
         return Utils.upscale_units(total)
+    
+    def get_all_users() -> list[str]:
+        pass

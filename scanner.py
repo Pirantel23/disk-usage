@@ -20,14 +20,30 @@ class DiskUsage:
                 self.max_size = Utils.downscale_units(splitted_size[1])
             except InvalidSizeFormat:
                 print(f'{cl.RED}Size format is invalid.')
+                self.min_size, self.max_size = None, None
         else:
             self.min_size, self.max_size = None, None
         
-        splitted_nested = nested_filter.split('-')
-        self.min_nested = int(splitted_nested[0])
-        self.max_nested = int(splitted_nested[1])
+        if nested_filter:
+            splitted_nested = nested_filter.split('-')
+            self.min_nested = int(splitted_nested[0])
+            self.max_nested = int(splitted_nested[1])
+        else:
+            self.min_nested, self.max_nested = None, None
 
         self.author_filter = author_filter
+
+        self.print_filters()
+
+    def print_filters(self) -> None:
+        if self.extension_filter:
+            print(f'{cl.YELLOW}Extension filter set to {self.extension_filter}{cl.RESET}')
+        if self.date_filter:
+            print(f'{cl.YELLOW}Date filter set to {self.date_filter}{cl.RESET}')
+        if self.min_size and self.max_size:
+            print(f'{cl.YELLOW}Size filter set from {self.min_size}b to {self.max_size}b{cl.RESET}')
+        if self.min_nested and self.max_nested:
+            print(f'{cl.YELLOW}Nested level filter set from {self.min_nested} to {self.max_nested}{cl.RESET}')
 
     def get_files_in_directory(self) -> list[File]:
         if not os.path.exists(self.directory): 

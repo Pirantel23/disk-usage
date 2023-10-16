@@ -17,10 +17,6 @@ if __name__ == "__main__":
 
     try:
         diskusage = DiskUsage(args.directory, args.extension, args.date, args.size, args.author, args.nested)
-        if args.extension:
-            print(f'{cl.YELLOW}Extension filter set to {args.extension}{cl.RESET}')
-        if args.date:
-            print(f'{cl.YELLOW}Date filter set to {args.date}{cl.RESET}')
         files = diskusage.get_disk_usage()
         if not files:
             print(f"{cl.RED}No files found.{cl.RESET}")
