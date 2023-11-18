@@ -7,12 +7,14 @@ from exceptions import EmptyDirectoryException, InvalidDirectoryException, Inval
 from file import File
 import coloring as cl
 
+
+EXCLUDED_EXTENSIONS = ['.tmp', '.bak', '.log']
+
 class DiskUsage:
     def __init__(self, directory, extension_filter: str = None, date_filter: str = None, size_filter: str = None, author_filter: str = None, nested_filter: str = None):
         self.directory = directory
         self.extension_filter = extension_filter
         self.date_filter = datetime.strptime(date_filter, "%d-%m-%Y") if date_filter else None
-
         if size_filter:
             try:
                 splitted_size = size_filter.split('-')
@@ -40,7 +42,7 @@ class DiskUsage:
             print(f'{cl.YELLOW}Extension filter set to {self.extension_filter}{cl.RESET}')
         if self.date_filter:
             print(f'{cl.YELLOW}Date filter set to {self.date_filter}{cl.RESET}')
-        if self.min_size and self.max_size:
+        if isinstance(self.min_size, int) and isinstance(self.max_size, int):
             print(f'{cl.YELLOW}Size filter set from {self.min_size}b to {self.max_size}b{cl.RESET}')
         if self.min_nested and self.max_nested:
             print(f'{cl.YELLOW}Nested level filter set from {self.min_nested} to {self.max_nested}{cl.RESET}')
@@ -59,7 +61,7 @@ class DiskUsage:
             return False
         if self.date_filter and not Utils.check_creation_date(file, self.date_filter):
             return False
-        if self.min_size and self.max_size and not Utils.check_size(file, self.min_size, self.max_size):
+        if isinstance(self.min_size, int) and isinstance(self.max_size, int) and not Utils.check_size(file, self.min_size, self.max_size):
             return False
         if self.min_nested and self.max_nested and not Utils.check_nested_level(file, self.min_nested, self.max_nested):
             return False
@@ -72,6 +74,8 @@ class DiskUsage:
             raise EmptyDirectoryException
         for path in tqdm(paths, desc="Scanning files", mininterval=0.01, unit='files', miniters=1, smoothing=1):
             file = File(path)
+            if file.extension in EXCLUDED_EXTENSIONS:
+                continue
             if self.apply_filters(file):
                 found.append(file)
         

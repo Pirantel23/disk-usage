@@ -1,7 +1,17 @@
 from exceptions import InvalidRangeOperator, InvalidSizeFormat
-import subprocess
+from functools import wraps
 
 class Utils:
+    def handle_file_not_found_error(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except FileNotFoundError:
+                return
+
+        return wrapper
+
     def check_extension(file, extension: str) -> bool:
         return file.extension == extension
     
