@@ -2,12 +2,14 @@ from exceptions import InvalidRangeOperator, InvalidSizeFormat
 from functools import wraps
 
 class Utils:
-    def handle_file_not_found_error(func):
+    def handle_file_errors(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
             except FileNotFoundError:
+                return
+            except OSError:
                 return
 
         return wrapper
